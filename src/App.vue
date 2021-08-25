@@ -1,23 +1,78 @@
 <template>
-  <router-view></router-view>
+  <div class="main">
+    <div class="header">要做的事</div>
+    <hr style="height: 10px; background-color: white" />
+    <div class="content">
+      <ul>
+        <li v-for="(item,index) in me_data" :key="index">
+          time:{{item.time}}
+        </li>
+      </ul>
+    </div>
+    <div class="nav-bar">
+      <button class="add" @click="add">+</button>
+    </div>
+    <div class="add-type"></div>
+  </div>
 </template>
 
 <script lang="ts">
-import {provide,ref} from 'vue'
-import {router} from './router'
+import { defineComponent } from 'vue'
+import dt from "./data/dataOperations.js";
 
-export default {
+export default defineComponent({
   name: 'App',
-  setup(){
-    const width = document.documentElement.clientWidth
-    const asideVisiable = ref(width > 500 ? true:false)
-    provide('asideVisiable',asideVisiable)
-    router.afterEach(()=>{
-      if (width>500) {
-        return
-      }
-      asideVisiable.value=false
-    })
+  setup(props, context) {
+    dt.init_data();
+    let me_data=dt.get_data();
+    for (const iterator of me_data) {
+      iterator.time=new Date(iterator.createTime).toLocaleString()
+    }
+    function add() {
+      dt.push_item({});
+      dt.init_data();
+    }
+    return { add,me_data };
   }
-}
+})
 </script>
+
+<style>
+* {
+  border: 0;
+  margin: 0;
+}
+.main {
+  width: 100%;
+  background-color: lightgray;
+}
+.header {
+  width: 100%;
+  height: 60px;
+  background-color: lightpink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.content {
+  width: 100%;
+  height: 500px;
+  background-color: lightblue;
+}
+.nav-bar {
+  width: 100%;
+  height: 60px;
+  background-color: lightgreen;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+</style>
