@@ -37,9 +37,21 @@ function insert_item(item, index) {
     set_data(me_data)
 }
 
+function pop_item() {
+    let me_data = get_data()
+    me_data.pop()
+    set_data(me_data)
+}
+
+function shift_item() {
+    let me_data = get_data()
+    me_data.shift()
+    set_data(me_data)
+}
+
 function clear_data() {
     set_data([])
 }
 
-export default{init_data,get_data,set_data,
-    unshift_item,push_item,insert_item,clear_data}
+export default{init_data,get_data,set_data,shift_item,
+    unshift_item,push_item,pop_item,insert_item,clear_data}

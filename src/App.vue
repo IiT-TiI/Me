@@ -10,8 +10,11 @@
       </ul>
     </div>
     <div class="nav-bar">
+      <button class="shift" @click="shift_item">-</button>
       <button class="add" @click="add">+</button>
+      <button class="pop" @click="pop_item">-</button>
     </div>
+    
     <div class="add-type"></div>
   </div>
 </template>
@@ -32,7 +35,15 @@ export default defineComponent({
       dt.push_item({});
       dt.init_data();
     }
-    return { add,me_data };
+    function shift_item() {
+      dt.shift_item();
+      dt.init_data();
+    }
+    function pop_item() {
+      dt.pop_item();
+      dt.init_data();
+    }
+    return { add,me_data,shift_item,pop_item };
   }
 })
 </script>
