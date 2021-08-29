@@ -5,17 +5,23 @@
     <div class="content">
       <ul>
         <li v-for="(item,index) in me_data" :key="index">
-          time:{{item.time}}
+          time:{{(new Date(item.createTime)).toLocaleString()}}
         </li>
       </ul>
     </div>
     <div class="nav-bar">
       <button class="shift" @click="shift_item">-</button>
-      <button class="add" @click="add">+</button>
+      <button class="toggoleOptions" @click="toggoleOptions">+</button>
       <button class="pop" @click="pop_item">-</button>
     </div>
     
-    <div class="add-type"></div>
+    <div>
+      <div class="add-type" v-if="toggleType">
+        <div @click="toggoleOptions" class="toggoleOptions">X</div>
+      </div>
+      <div class="shadowLayer" v-if="toggleType" @click="toggoleOptions"></div>
+    </div>
+    
   </div>
 </template>
 
@@ -25,25 +31,32 @@ import dt from "./data/dataOperations.js";
 
 export default defineComponent({
   name: 'App',
-  setup(props, context) {
-    dt.init_data();
-    let me_data=dt.get_data();
-    for (const iterator of me_data) {
-      iterator.time=new Date(iterator.createTime).toLocaleString()
+  data(){
+    return {
+      me_data:[],
+      toggleType:false
     }
-    function add() {
-      dt.push_item({});
-      dt.init_data();
-    }
-    function shift_item() {
+  },
+  methods:{
+    toggoleOptions() {
+      this.toggleType=!this.toggleType;
+    },
+    shift_item() {
       dt.shift_item();
       dt.init_data();
-    }
-    function pop_item() {
+      this.me_data=dt.get_data();
+
+    },
+    pop_item() {
       dt.pop_item();
       dt.init_data();
+      this.me_data=dt.get_data();
     }
-    return { add,me_data,shift_item,pop_item };
+  },
+  created(){
+    this.me_data=dt.get_data();
+  },
+  setup(props, context) {
   }
 })
 </script>
@@ -81,9 +94,40 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
 }
-.add {
+.toggoleOptions {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+.add-type{
+  width: 100%;
+  height: 200px;
+  transition: all .5;
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  left: 0;
+  background-color: grey;
+}
+.add-type .toggoleOptions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 5px 0;
+  background-color: white;
+}
+.shadowLayer{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: .3;
 }
 </style>
